@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Xander Forrest | Tech Help and Training</title>
+    <meta property="og:type" content="website">
+    <meta name="description" content="Help with understanding and using your technology - general computer training to getting you setup with a full web presence.">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/bootstrap/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='https://fonts.googleapis.com/css?family=Lora') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/fonts/font-awesome.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/Article-Clean.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/Contact-Form-Clean.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/Footer-Basic.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/Highlight-Phone.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/Navigation-Clean.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/Service-Box-Style-01.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/Social-Icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/styles.css') }}">
+</head>
+
+<body>
+
+    {% block content %}{% endblock %}
+
+    <div class="footer-basic">
+        <footer>
+            <div class="social"><a href="https://github.com/xanderforrest"><i class="fa fa-github"></i></a><a href="https://www.facebook.com/xanderforresttech/"><i class="fa fa-facebook"></i></a></div>
+            <p class="footer-text">xander@xanderforrest.com - 07568 991167</p>
+            <p class="copyright">Xander Forrest&nbsp;<strong>© 2020</strong><br><br></p>
+        </footer>
+    </div>
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+</body>
+
+</html>
