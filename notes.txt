@@ -1,0 +1,5 @@
+                        <figure><img class="figure-img" src="beach.jpg" />
+                            <figcaption>Caption</figcaption>
+                        </figure>
+
+                        use this to add images to blog posts

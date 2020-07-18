@@ -1,0 +1,23 @@
+    {% extends "structure.html" %}
+
+
+    {% block content %}
+
+<body>
+    <div class="article-clean">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-10 col-xl-8 offset-lg-1 offset-xl-2">
+                    <div class="intro">
+                        <h1 class="text-center">{{post.heading}}}</h1>
+                        <p class="text-center"><span class="by">by</span><a href="#">Xander Forrest</a><span class="date">{{post.date}} </span></p><img class="img-fluid" src="/uploads/{{post.image}}"/></div>
+                    <div class="text">
+                        {{ post.content | safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+    {% endblock %}

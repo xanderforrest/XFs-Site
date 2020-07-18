@@ -5,7 +5,7 @@ import os
 app = Flask(__name__)
 
 CM = ContentManager()
-UPLOAD_FOLDER = os.path.join("uploads", "images")
+UPLOAD_FOLDER = "uploads"
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 
@@ -43,6 +43,12 @@ def contact():
 def blog():
     posts = CM.get_posts()
     return render_template('blog.html', posts=posts)
+
+
+@app.route('/blog/post')
+def testroute():
+    test_data = {"heading": "Miraculous Flask Website in 5 Steps!", "date": "20th July", "image": "test.png", "content": "<p>CONTENT REEEE</p>"}
+    return render_template('blog/post.html', post=test_data)
 
 
 @app.route('/blog/<blogid>')
