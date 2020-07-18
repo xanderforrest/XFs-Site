@@ -2,18 +2,7 @@
 
 
     {% block content %}
-    <nav class="navbar navbar-light navbar-expand-md navigation-clean">
-        <div class="container"><img class="logo" src="assets/img/NEW.png"><a class="navbar-brand" href="../index.html">Xander Forrest</a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
-            <div
-                class="collapse navbar-collapse" id="navcol-1">
-                <ul class="nav navbar-nav ml-auto">
-                    <li class="nav-item" role="presentation"><a class="nav-link" href="../index.html">Home</a></li>
-                    <li class="nav-item" role="presentation"><a class="nav-link" href="../services.html">Services</a></li>
-                    <li class="nav-item" role="presentation"><a class="nav-link" href="../contact.html">Contact</a></li>
-                </ul>
-        </div>
-        </div>
-    </nav>
+
     <div class="article-clean">
         <div class="container">
             <div class="row top-row">
@@ -38,7 +27,7 @@
                         <h2 class="getintouch">Get in touch</h2>
                         <p>If you've got an issue, I can help.</p><a class="btn btn-primary" role="button" href="mailto:xander@xanderforrest.com">Send me an email</a></div>
                 </div>
-                <div class="col"><img class="tree" src="assets/img/NEW.png"></div>
+                <div class="col"><img class="tree" src="{{ url_for('static', filename='assets/img/NEW.png') }}"></div>
             </div>
         </div>
     </div>
