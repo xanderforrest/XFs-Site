@@ -1,10 +1,26 @@
 from flask import Flask, render_template, request, url_for, redirect, send_from_directory
+from flask_sqlalchemy import SQLAlchemy
 from utilities import ContentManager
 from werkzeug.utils import secure_filename
+from datetime import datetime
 import os
-app = Flask(__name__)
 
-CM = ContentManager()
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.dirname(__file__) + '/new.db'
+db = SQLAlchemy(app)
+
+
+class BlogPost(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    heading = db.Column(db.String(100), unique=False, nullable=False)
+    date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    content = db.Column(db.Text, nullable=False)
+    image = db.Column(db.String(100), nullable=True)
+
+    def __repr__(self):
+        return '<BlogPost %r>' % self.heading
+
+
 UPLOAD_FOLDER = "uploads"
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
@@ -16,6 +32,7 @@ def allowed_file(filename):
 
 @app.route('/')
 def index():
+    print(BlogPost.query.all())
     return render_template('index.html')
 
 
