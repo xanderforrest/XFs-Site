@@ -58,8 +58,7 @@ def contact():
 
 @app.route('/blog')
 def blog():
-    posts = CM.get_posts()
-    return render_template('blog.html', posts=posts)
+    return render_template('blog.html')
 
 
 @app.route('/blog/post')
