@@ -60,14 +60,14 @@ def contact():
 
 @app.route('/blog')
 def blog():
-    posts = BlogPost.query.all()
+    posts = BlogPost.query.limit(3).all()
     return render_template('blog.html', posts=posts)
 
 
 @app.route('/blog/<posturl>')
 def post(posturl):
     post_data = BlogPost.query.filter_by(url=posturl).first()
-    return render_template('post.html', post=post_data)
+    return render_template('blog/post.html', post=post_data)
 
 
 @app.route('/admin/new-blog', methods=['GET', 'POST'])
@@ -82,7 +82,7 @@ def new_post():
         db.session.add(post_data)
         db.session.commit()
 
-        return redirect(url_for("post", blogid=post_data.url))
+        return redirect(url_for("post", posturl=post_data.url))
 
 
 @app.route('/uploads/<filename>')
