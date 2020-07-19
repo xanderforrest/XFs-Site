@@ -8,7 +8,7 @@
     <meta property="og:type" content="website">
     <meta name="description" content="Help with understanding and using your technology - general computer training to getting you setup with a full web presence.">
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/bootstrap/css/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='https://fonts.googleapis.com/css?family=Lora') }}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora">
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/fonts/font-awesome.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/Article-Clean.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/Contact-Form-Clean.css') }}">
@@ -45,8 +45,8 @@
             <p class="copyright">Xander Forrest&nbsp;<strong>© 2020</strong><br><br></p>
         </footer>
     </div>
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="{{ url_for('static', filename='assets/js/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/bootstrap/js/bootstrap.min.js') }}"></script>
 </body>
 
 </html>
