@@ -12,7 +12,8 @@ db = SQLAlchemy(app)
 
 class BlogPost(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    heading = db.Column(db.String(100), unique=True, nullable=False)
+    heading = db.Column(db.String(100), unique=False, nullable=False)
+    url = db.Column(db.String(100), unique=True, nullable=False)
     description = db.Column(db.Text, nullable=False)
     date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     content = db.Column(db.Text, nullable=False)
@@ -63,15 +64,9 @@ def blog():
     return render_template('blog.html', posts=posts)
 
 
-@app.route('/blog/post')
-def testroute():
-    test_data = {"heading": "Miraculous Flask Website in 5 Steps!", "date": "20th July", "image": "test.png", "content": "<p>CONTENT REEEE</p>"}
-    return render_template('blog/post.html', post=test_data)
-
-
-@app.route('/blog/<blogid>')
-def post(blogid):
-    post_data = CM.get_post(blogid)
+@app.route('/blog/<posturl>')
+def post(posturl):
+    post_data = BlogPost.query.filter_by(url=posturl).first()
     return render_template('post.html', post=post_data)
 
 
@@ -80,11 +75,14 @@ def new_post():
     if request.method == 'GET':
         return render_template('admin/blog-editor.html')
     elif request.method == 'POST':
-        data = request.form.to_dict()
+        post_data = BlogPost(heading=request.form["heading"], url=request.form["heading"].lower().replace(" ", "-"),
+                             description=request.form["description"], content=request.form["content"],
+                             image=request.form["image"])
 
-        id = CM.add_post(request.form.to_dict())
-        if id:
-            return redirect(url_for("post", blogid=id))
+        db.session.add(post_data)
+        db.session.commit()
+
+        return redirect(url_for("post", blogid=post_data.url))
 
 
 @app.route('/uploads/<filename>')
