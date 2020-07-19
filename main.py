@@ -12,7 +12,8 @@ db = SQLAlchemy(app)
 
 class BlogPost(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    heading = db.Column(db.String(100), unique=False, nullable=False)
+    heading = db.Column(db.String(100), unique=True, nullable=False)
+    description = db.Column(db.Text, nullable=False)
     date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     content = db.Column(db.Text, nullable=False)
     image = db.Column(db.String(100), nullable=True)
@@ -58,7 +59,8 @@ def contact():
 
 @app.route('/blog')
 def blog():
-    return render_template('blog.html')
+    posts = BlogPost.query.all()
+    return render_template('blog.html', posts=posts)
 
 
 @app.route('/blog/post')
@@ -73,11 +75,13 @@ def post(blogid):
     return render_template('post.html', post=post_data)
 
 
-@app.route('/blog/new', methods=['GET', 'POST'])
+@app.route('/admin/new-blog', methods=['GET', 'POST'])
 def new_post():
     if request.method == 'GET':
-        return render_template('blogbuilder.html')
+        return render_template('admin/blog-editor.html')
     elif request.method == 'POST':
+        data = request.form.to_dict()
+
         id = CM.add_post(request.form.to_dict())
         if id:
             return redirect(url_for("post", blogid=id))
@@ -88,7 +92,7 @@ def uploaded_file(filename):
     return send_from_directory(UPLOAD_FOLDER, filename)
 
 
-@app.route('/uploads/image', methods=['GET', 'POST'])
+@app.route('/upload', methods=['GET', 'POST'])
 def upload_image():
     if request.method == 'POST':
         if 'file' not in request.files:
