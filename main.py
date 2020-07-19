@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request, url_for, redirect, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
-from utilities import ContentManager
 from werkzeug.utils import secure_filename
 from datetime import datetime
 import os
