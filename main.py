@@ -60,7 +60,8 @@ def contact():
 
 @app.route('/blog')
 def blog():
-    posts = BlogPost.query.limit(3).all()
+    #  TODO ADD PAGES IF GOING TO LIMIT BLOG POSTS PER PAGE
+    posts = BlogPost.query.limit(9).all()
     return render_template('blog.html', posts=posts)
 
 
