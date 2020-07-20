@@ -85,6 +85,16 @@ def new_post():
         return redirect(url_for("post", posturl=post_data.url))
 
 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'GET':
+        return render_template('admin/login.html')
+    elif request.method == 'POST':
+        print(request.form["email"])
+        print(request.form["password"])
+        return redirect(url_for("home"))
+
+
 @app.route('/uploads')
 def uploads():
     pics = os.listdir('uploads/')
