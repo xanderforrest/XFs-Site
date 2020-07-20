@@ -1,0 +1,12 @@
+    {% extends "structure.html" %}
+
+
+    {% block content %}
+
+    <h1 class="text-center">Upload File</h1>
+    <form method=post enctype=multipart/form-data>
+      <input type=file name=file>
+      <input type=submit value=Upload>
+    </form>
+
+            {% endblock %}

@@ -85,6 +85,12 @@ def new_post():
         return redirect(url_for("post", posturl=post_data.url))
 
 
+@app.route('/uploads')
+def uploads():
+    pics = os.listdir('uploads/')
+    return render_template('admin/uploads.html', pics=pics)
+
+
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
     return send_from_directory(UPLOAD_FOLDER, filename)
@@ -105,15 +111,7 @@ def upload_image():
             file.save(os.path.join(UPLOAD_FOLDER, filename))
             return redirect(url_for('uploaded_file', filename=filename))
     if request.method == 'GET':
-        return '''
-    <!doctype html>
-    <title>Upload new File</title>
-    <h1>Upload new File</h1>
-    <form method=post enctype=multipart/form-data>
-      <input type=file name=file>
-      <input type=submit value=Upload>
-    </form>
-    '''
+        return render_template('admin/upload.html')
 
 
 if __name__ == '__main__':

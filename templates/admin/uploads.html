@@ -1,0 +1,12 @@
+    {% extends "structure.html" %}
+
+
+    {% block content %}
+
+{% for pic in pics %}
+<a href="/uploads/{{pic | safe}}">
+    <img src="/uploads/{{pic | safe}}"/>
+</a>
+{% endfor %}
+
+    {% endblock %}
