@@ -1,5 +1,7 @@
 from flask import Flask, session, render_template, request, url_for, redirect, send_from_directory, flash
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.ext.hybrid import hybrid_property
+from flask_bcrypt import Bcrypt, generate_password_hash
 from werkzeug.utils import secure_filename
 from flask_login import LoginManager, login_user, logout_user, login_required
 from datetime import datetime
@@ -11,6 +13,12 @@ app.secret_key = b'\x97E\x81-\xb0\xe8M\xee\xdc0\xaf~\x10\xa9j{'
 db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
+bcrypt = Bcrypt(app)
+
+
+BCRYPT_LOG_ROUNDS = 12
+UPLOAD_FOLDER = "uploads"
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 
 class BlogPost(db.Model):
@@ -25,6 +33,7 @@ class BlogPost(db.Model):
     def __repr__(self):
         return '<BlogPost %r>' % self.heading
 
+
 class User(db.Model):
     """An admin user capable of viewing reports.
 
@@ -35,8 +44,19 @@ class User(db.Model):
     __tablename__ = 'user'
 
     email = db.Column(db.String, primary_key=True)
-    password = db.Column(db.String)
+    _password = db.Column(db.String)
     authenticated = db.Column(db.Boolean, default=False)
+
+    @hybrid_property
+    def password(self):
+        return self._password
+
+    @password.setter
+    def password(self, plaintext):
+        self._password = bcrypt.generate_password_hash(plaintext)
+
+    def is_correct_password(self, plaintext):
+        return bcrypt.check_password_hash(self._password, plaintext)
 
     def is_active(self):
         """True, as all users are active."""
@@ -63,10 +83,6 @@ def user_loader(user_id):
 @login_manager.unauthorized_handler
 def unauthorized():
     return redirect(url_for("login"))
-
-
-UPLOAD_FOLDER = "uploads"
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 
 def allowed_file(filename):
@@ -138,11 +154,11 @@ def login():
     if request.method == 'GET':
         return render_template('admin/login.html')
     elif request.method == 'POST':
-        user = User(email=request.form["email"], password=request.form["password"])
-        login_user(user)
-        flash('Logged in successfully')
-
-        return redirect(url_for("home"))
+        user = User.query.filter_by(email=request.form["email"]).first_or_404()
+        if user.is_correct_password(request.form["password"]):
+            login_user(user)
+            flash('Logged in successfully')
+            return redirect(url_for("home"))
 
 
 @app.route('/logout')
