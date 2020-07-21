@@ -1,7 +1,7 @@
 from flask import Flask, session, render_template, request, url_for, redirect, send_from_directory, flash
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
-from flask_login import LoginManager, login_user, login_required
+from flask_login import LoginManager, login_user, logout_user, login_required
 from datetime import datetime
 import os
 
@@ -59,6 +59,12 @@ class User(db.Model):
 def user_loader(user_id):
     return User.query.get(user_id)
 
+
+@login_manager.unauthorized_handler
+def unauthorized():
+    return redirect(url_for("login"))
+
+
 UPLOAD_FOLDER = "uploads"
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
@@ -107,6 +113,11 @@ def post(posturl):
     return render_template('blog/post.html', post=post_data)
 
 
+@app.route('/admin')
+def admin():
+    return render_template('admin.html')
+
+
 @app.route('/admin/new-blog', methods=['GET', 'POST'])
 def new_post():
     if request.method == 'GET':
@@ -132,6 +143,13 @@ def login():
         flash('Logged in successfully')
 
         return redirect(url_for("home"))
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for("home"))
 
 
 @app.route('/uploads')
