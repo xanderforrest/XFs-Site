@@ -1,12 +1,16 @@
-from flask import Flask, render_template, request, url_for, redirect, send_from_directory
+from flask import Flask, session, render_template, request, url_for, redirect, send_from_directory, flash
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
+from flask_login import LoginManager, login_user, login_required
 from datetime import datetime
 import os
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.dirname(__file__) + '/new.db'
+app.secret_key = b'\x97E\x81-\xb0\xe8M\xee\xdc0\xaf~\x10\xa9j{'
 db = SQLAlchemy(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
 
 
 class BlogPost(db.Model):
@@ -21,6 +25,39 @@ class BlogPost(db.Model):
     def __repr__(self):
         return '<BlogPost %r>' % self.heading
 
+class User(db.Model):
+    """An admin user capable of viewing reports.
+
+    :param str email: email address of user
+    :param str password: encrypted password for the user
+
+    """
+    __tablename__ = 'user'
+
+    email = db.Column(db.String, primary_key=True)
+    password = db.Column(db.String)
+    authenticated = db.Column(db.Boolean, default=False)
+
+    def is_active(self):
+        """True, as all users are active."""
+        return True
+
+    def get_id(self):
+        """Return the email address to satisfy Flask-Login's requirements."""
+        return self.email
+
+    def is_authenticated(self):
+        """Return True if the user is authenticated."""
+        return self.authenticated
+
+    def is_anonymous(self):
+        """False, as anonymous users aren't supported."""
+        return False
+
+
+@login_manager.user_loader
+def user_loader(user_id):
+    return User.query.get(user_id)
 
 UPLOAD_FOLDER = "uploads"
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
@@ -90,12 +127,15 @@ def login():
     if request.method == 'GET':
         return render_template('admin/login.html')
     elif request.method == 'POST':
-        print(request.form["email"])
-        print(request.form["password"])
+        user = User(email=request.form["email"], password=request.form["password"])
+        login_user(user)
+        flash('Logged in successfully')
+
         return redirect(url_for("home"))
 
 
 @app.route('/uploads')
+@login_required
 def uploads():
     pics = os.listdir('uploads/')
     return render_template('admin/uploads.html', pics=pics)
@@ -107,6 +147,7 @@ def uploaded_file(filename):
 
 
 @app.route('/upload', methods=['GET', 'POST'])
+@login_required
 def upload_image():
     if request.method == 'POST':
         if 'file' not in request.files:
