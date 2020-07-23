@@ -30,6 +30,9 @@
             <div
                 class="collapse navbar-collapse" id="navcol-1">
                 <ul class="nav navbar-nav ml-auto">
+                    {% if current_user.is_authenticated %}
+                    <li class="nav-item" role="presentation"><a class="nav-link" href="/admin">Control Panel</a></li>
+                    {% endif %}
                     <li class="nav-item" role="presentation"><a class="nav-link" href="/home">Home</a></li>
                     <li class="nav-item" role="presentation"><a class="nav-link" href="/blog">Blog</a></li>
                     <li class="nav-item" role="presentation"><a class="nav-link" href="/services">Services</a></li>
@@ -45,7 +48,12 @@
         <footer>
             <div class="social"><a href="https://github.com/xanderforrest"><i class="fa fa-github"></i></a><a href="https://www.facebook.com/xanderforresttech/"><i class="fa fa-facebook"></i></a></div>
             <p class="footer-text">xander@xanderforrest.com - 07568 991167</p>
-            <p class="copyright">Xander Forrest&nbsp;<strong>© 2020</strong><br><br></p>
+            <p class="copyright">Xander Forrest&nbsp;<strong>© 2020</strong></p>
+                    {% if current_user.is_authenticated %}
+                    <p class="copyright"><a href="/logout">Logout</a><br><br></p>
+                    {% else %}
+                    <p class="copyright"><a href="/login">Log in</a><br><br></p>
+                    {% endif %}
         </footer>
     </div>
     <script src="{{ url_for('static', filename='assets/js/jquery.min.js') }}"></script>

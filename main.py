@@ -1,66 +1,20 @@
 from flask import Flask, session, render_template, request, url_for, redirect, send_from_directory, flash
-from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
-from flask_login import LoginManager, login_user, login_required
-from datetime import datetime
+from flask_login import login_user, logout_user, login_required
 import os
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.dirname(__file__) + '/new.db'
-app.secret_key = b'\x97E\x81-\xb0\xe8M\xee\xdc0\xaf~\x10\xa9j{'
-db = SQLAlchemy(app)
-login_manager = LoginManager()
-login_manager.init_app(app)
-
-
-class BlogPost(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    heading = db.Column(db.String(100), unique=False, nullable=False)
-    url = db.Column(db.String(100), unique=True, nullable=False)
-    description = db.Column(db.Text, nullable=False)
-    date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    content = db.Column(db.Text, nullable=False)
-    image = db.Column(db.String(100), nullable=True)
-
-    def __repr__(self):
-        return '<BlogPost %r>' % self.heading
-
-class User(db.Model):
-    """An admin user capable of viewing reports.
-
-    :param str email: email address of user
-    :param str password: encrypted password for the user
-
-    """
-    __tablename__ = 'user'
-
-    email = db.Column(db.String, primary_key=True)
-    password = db.Column(db.String)
-    authenticated = db.Column(db.Boolean, default=False)
-
-    def is_active(self):
-        """True, as all users are active."""
-        return True
-
-    def get_id(self):
-        """Return the email address to satisfy Flask-Login's requirements."""
-        return self.email
-
-    def is_authenticated(self):
-        """Return True if the user is authenticated."""
-        return self.authenticated
-
-    def is_anonymous(self):
-        """False, as anonymous users aren't supported."""
-        return False
+from config import app, db, login_manager, UPLOAD_FOLDER, ALLOWED_EXTENSIONS
+from models import User, BlogPost
 
 
 @login_manager.user_loader
 def user_loader(user_id):
     return User.query.get(user_id)
 
-UPLOAD_FOLDER = "uploads"
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+@login_manager.unauthorized_handler
+def unauthorized():
+    return redirect(url_for("login"))
 
 
 def allowed_file(filename):
@@ -107,6 +61,11 @@ def post(posturl):
     return render_template('blog/post.html', post=post_data)
 
 
+@app.route('/admin')
+def admin():
+    return render_template('admin.html')
+
+
 @app.route('/admin/new-blog', methods=['GET', 'POST'])
 def new_post():
     if request.method == 'GET':
@@ -127,11 +86,20 @@ def login():
     if request.method == 'GET':
         return render_template('admin/login.html')
     elif request.method == 'POST':
-        user = User(email=request.form["email"], password=request.form["password"])
-        login_user(user)
-        flash('Logged in successfully')
+        user = User.query.filter_by(email=request.form["email"]).first_or_404()
+        if user.is_correct_password(request.form["password"]):
+            login_user(user)
+            flash('Logged in successfully')
+            return redirect(url_for("home"))
+        else:
+            return redirect(url_for("login"))
 
-        return redirect(url_for("home"))
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for("home"))
 
 
 @app.route('/uploads')
