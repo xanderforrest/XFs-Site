@@ -1,78 +1,10 @@
 from flask import Flask, session, render_template, request, url_for, redirect, send_from_directory, flash
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.ext.hybrid import hybrid_property
-from flask_bcrypt import Bcrypt, generate_password_hash
 from werkzeug.utils import secure_filename
-from flask_login import LoginManager, login_user, logout_user, login_required
-from datetime import datetime
+from flask_login import login_user, logout_user, login_required
 import os
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.dirname(__file__) + '/new.db'
-app.secret_key = b'\x97E\x81-\xb0\xe8M\xee\xdc0\xaf~\x10\xa9j{'
-db = SQLAlchemy(app)
-login_manager = LoginManager()
-login_manager.init_app(app)
-bcrypt = Bcrypt(app)
-
-
-BCRYPT_LOG_ROUNDS = 12
-UPLOAD_FOLDER = "uploads"
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-
-
-class BlogPost(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    heading = db.Column(db.String(100), unique=False, nullable=False)
-    url = db.Column(db.String(100), unique=True, nullable=False)
-    description = db.Column(db.Text, nullable=False)
-    date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    content = db.Column(db.Text, nullable=False)
-    image = db.Column(db.String(100), nullable=True)
-
-    def __repr__(self):
-        return '<BlogPost %r>' % self.heading
-
-
-class User(db.Model):
-    """An admin user capable of viewing reports.
-
-    :param str email: email address of user
-    :param str password: encrypted password for the user
-
-    """
-    __tablename__ = 'user'
-
-    email = db.Column(db.String, primary_key=True)
-    _password = db.Column(db.String)
-    authenticated = db.Column(db.Boolean, default=False)
-
-    @hybrid_property
-    def password(self):
-        return self._password
-
-    @password.setter
-    def password(self, plaintext):
-        self._password = bcrypt.generate_password_hash(plaintext)
-
-    def is_correct_password(self, plaintext):
-        return bcrypt.check_password_hash(self._password, plaintext)
-
-    def is_active(self):
-        """True, as all users are active."""
-        return True
-
-    def get_id(self):
-        """Return the email address to satisfy Flask-Login's requirements."""
-        return self.email
-
-    def is_authenticated(self):
-        """Return True if the user is authenticated."""
-        return self.authenticated
-
-    def is_anonymous(self):
-        """False, as anonymous users aren't supported."""
-        return False
+from config import app, db, login_manager, UPLOAD_FOLDER, ALLOWED_EXTENSIONS
+from models import User, BlogPost
 
 
 @login_manager.user_loader
@@ -159,6 +91,8 @@ def login():
             login_user(user)
             flash('Logged in successfully')
             return redirect(url_for("home"))
+        else:
+            return redirect(url_for("login"))
 
 
 @app.route('/logout')
