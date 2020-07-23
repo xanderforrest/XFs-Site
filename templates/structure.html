@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/styles.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/Article-List.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/Login-Form-Clean.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/Lightbox-Gallery.css') }}">
 
 </head>
 
@@ -31,7 +32,13 @@
                 class="collapse navbar-collapse" id="navcol-1">
                 <ul class="nav navbar-nav ml-auto">
                     {% if current_user.is_authenticated %}
-                    <li class="nav-item" role="presentation"><a class="nav-link" href="/admin">Control Panel</a></li>
+                    <li class="nav-item dropdown">
+                        <a data-toggle="dropdown" aria-expanded="false" class="dropdown-toggle nav-link" href="#">Control Panel</a>
+                        <div role="menu" class="dropdown-menu">
+                            <a role="presentation" class="dropdown-item" href="/uploads">Uploads</a>
+                            <a role="presentation" class="dropdown-item" href="/admin/new-blog">Add Blog Post</a>
+                        </div>
+                    </li>
                     {% endif %}
                     <li class="nav-item" role="presentation"><a class="nav-link" href="/home">Home</a></li>
                     <li class="nav-item" role="presentation"><a class="nav-link" href="/blog">Blog</a></li>
