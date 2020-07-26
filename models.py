@@ -1,4 +1,5 @@
 from config import bcrypt, db
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.ext.hybrid import hybrid_property
 from datetime import datetime
 
@@ -14,6 +15,26 @@ class BlogPost(db.Model):
 
     def __repr__(self):
         return '<BlogPost %r>' % self.heading
+
+
+class Client(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30), unique=False, nullable=False)
+    email = db.Column(db.String(30), unique=False, nullable=False)
+    phone = db.Column(db.String(30), unique=False)
+    time_spent = db.Column(db.Integer)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "email": self.email,
+            "phone": self.phone,
+            "time_spent": self.time_spent
+        }
+
+    def __repr__(self):
+        return '<Client %r>' % self.name
 
 
 class User(db.Model):

@@ -3,7 +3,7 @@ from werkzeug.utils import secure_filename
 from flask_login import login_user, logout_user, login_required
 import os
 from main import app, allowed_file
-from models import BlogPost, User
+from models import BlogPost, User, Client
 from config import app, db, UPLOAD_FOLDER
 
 
@@ -85,6 +85,14 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for("home"))
+
+
+@app.route('/clients')
+@login_required
+def clients():
+    _clients = Client.query.all()
+    print(_clients)
+    return str([client.to_dict() for client in _clients])
 
 
 @app.route('/uploads')
