@@ -6,15 +6,19 @@
     <div class="article-list">
         <div class="container">
             <div class="intro">
-                <h1 class="text-center">Latest Articles</h1>
+                <h1 class="text-center">Latest Posts</h1>
             </div>
             <div class="row articles">
+                {% if posts %}
                 {% for post in posts %}
                 <div
                     class="col-sm-6 col-md-4 item"><a href="/blog/{{post.url}}"><img class="img-fluid" src="/uploads/{{post.image}}" /></a>
                     <h3 class="name">{{post.heading}}</h3>
                     <p class="description">{{post.description}}</p><a class="action" href="/blog/{{post.url}}"><i class="fa fa-arrow-circle-right"></i></a></div>
                 {% endfor %}
+                {% else %}
+                There aren't any blog posts yet.
+                {% endif %}
             </div>
     </div>
     </div>

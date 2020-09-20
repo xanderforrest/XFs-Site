@@ -9,7 +9,6 @@ from config import app, db, UPLOAD_FOLDER
 
 @app.route('/')
 def index():
-    print(BlogPost.query.all())
     return render_template('index.html')
 
 
