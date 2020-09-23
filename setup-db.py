@@ -15,6 +15,9 @@ print("Importing models and creating database...")
 from models import *
 db.create_all()
 
+default_user = User(email="admin@admin.com", password="admin")
+db.session.add(default_user)
+
 print("Committing to new database...")
 db.session.commit()
 print("Done!")

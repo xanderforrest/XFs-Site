@@ -86,6 +86,12 @@ def logout():
     return redirect(url_for("home"))
 
 
+@app.route('/s/<code>')
+@login_required
+def shorten(code):  # TODO add code to upload urls
+    return redirect("https://google.com", code=301)
+
+
 @app.route('/clients')
 @login_required
 def clients():

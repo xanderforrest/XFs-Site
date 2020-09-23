@@ -1,5 +1,6 @@
     {% extends "structure.html" %}
 
+    {% block title %} Blog | Xander Forrest {% endblock %}
 
     {% block content %}
 
@@ -17,7 +18,9 @@
                     <p class="description">{{post.description}}</p><a class="action" href="/blog/{{post.url}}"><i class="fa fa-arrow-circle-right"></i></a></div>
                 {% endfor %}
                 {% else %}
-                There aren't any blog posts yet.
+                <div class="row articles">
+                    <h3 class="name"> There aren't any blog posts yet. </h3>
+                </div>
                 {% endif %}
             </div>
     </div>
